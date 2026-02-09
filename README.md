@@ -1,5 +1,7 @@
 # okini
 
+[[Japanese](./README-ja.md)]
+
 A CLI tool for bookmarking local file paths
 
 ## Installation
