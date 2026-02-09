@@ -4,11 +4,22 @@
 
 ## インストール
 
+**Unix/Linux/macOS:**
+```bash
+go build -o ~/go/bin/okini
 ```
+
+**Windows (PowerShell):**
+```powershell
+go build -o "$env:USERPROFILE\go\bin\"
+```
+
+**Windows (コマンドプロンプト):**
+```cmd
 go build -o %USERPROFILE%\go\bin\
 ```
 
-ビルドした `okini` をPATHの通ったディレクトリに配置してください。
+`~/go/bin` (Unix) または `%USERPROFILE%\go\bin` (Windows) がPATHに含まれていることを確認してください。
 
 ## 使い方
 
@@ -23,6 +34,14 @@ okini --add /path/to/file myfile
 ```
 
 名前が既に存在する場合は上書きされます。
+
+### ブックマークの削除
+
+```bash
+okini --remove /path/to/file
+```
+
+指定したパスに一致するブックマークをすべて削除します（名前が異なっていても削除されます）。
 
 ### ブックマーク名の一覧取得
 

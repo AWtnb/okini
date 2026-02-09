@@ -136,10 +136,46 @@ func searchBookmark(name string) error {
 	return fmt.Errorf("bookmark not found: %s", name)
 }
 
+func removeBookmark(path string) error {
+	// Convert to absolute path
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return fmt.Errorf("invalid path: %w", err)
+	}
+
+	bookmarks, err := loadBookmarks()
+	if err != nil {
+		return err
+	}
+
+	// Filter out all bookmarks with matching path
+	filtered := make(Bookmarks, 0)
+	removedCount := 0
+	for _, bm := range bookmarks {
+		if bm.Path != absPath {
+			filtered = append(filtered, bm)
+		} else {
+			removedCount++
+		}
+	}
+
+	if removedCount == 0 {
+		return fmt.Errorf("no bookmark found with path: %s", absPath)
+	}
+
+	if err := saveBookmarks(filtered); err != nil {
+		return err
+	}
+
+	fmt.Printf("Removed %d bookmark(s)\n", removedCount)
+	return nil
+}
+
 func run() int {
 	addCmd := flag.String("add", "", "Add a bookmark for the file path")
 	listCmd := flag.Bool("list", false, "List all bookmark names")
 	searchCmd := flag.String("search", "", "Search path by name")
+	removeCmd := flag.String("remove", "", "Remove bookmark(s) by path")
 
 	flag.Parse()
 
@@ -156,6 +192,15 @@ func run() int {
 			return 1
 		}
 		fmt.Printf("Bookmark added: %s\n", *addCmd)
+		return 0
+	}
+
+	// Remove mode
+	if *removeCmd != "" {
+		if err := removeBookmark(*removeCmd); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			return 1
+		}
 		return 0
 	}
 
@@ -181,13 +226,15 @@ func run() int {
 	fmt.Println("okini - File path bookmark tool")
 	fmt.Println()
 	fmt.Println("Usage:")
-	fmt.Println("  okini --add <file_path> [name]  Add a bookmark")
-	fmt.Println("  okini --list                    List all bookmark names")
-	fmt.Println("  okini --search <name>           Search path by name")
+	fmt.Println("  okini --add <file_path> [name]     Add a bookmark")
+	fmt.Println("  okini --remove <file_path>         Remove bookmark(s) by path")
+	fmt.Println("  okini --list                       List all bookmark names")
+	fmt.Println("  okini --search <name>              Search path by name")
 	fmt.Println()
 	fmt.Println("Examples:")
 	fmt.Println("  okini --add /path/to/file")
 	fmt.Println("  okini --add /path/to/file myfile")
+	fmt.Println("  okini --remove /path/to/file")
 	fmt.Println("  okini --list | fzf | xargs okini --search")
 	return 0
 }

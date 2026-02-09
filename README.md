@@ -6,11 +6,22 @@ A CLI tool for bookmarking local file paths
 
 ## Installation
 
+**Unix/Linux/macOS:**
+```bash
+go build -o ~/go/bin/okini
 ```
+
+**Windows (PowerShell):**
+```powershell
+go build -o "$env:USERPROFILE\go\bin\"
+```
+
+**Windows (Command Prompt):**
+```cmd
 go build -o %USERPROFILE%\go\bin\
 ```
 
-Place the built `okini` executable in a directory that's in your PATH.
+Make sure `~/go/bin` (Unix) or `%USERPROFILE%\go\bin` (Windows) is in your PATH.
 
 ## Usage
 
@@ -25,6 +36,14 @@ okini --add /path/to/file myfile
 ```
 
 If a bookmark with the same name already exists, it will be overwritten.
+
+### Removing Bookmarks
+
+```bash
+okini --remove /path/to/file
+```
+
+This will remove all bookmarks with the matching path, even if they have different names.
 
 ### Listing Bookmark Names
 
