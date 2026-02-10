@@ -8,17 +8,17 @@ A CLI tool for bookmarking local file paths
 
 **Unix/Linux/macOS:**
 ```bash
-go build -o ~/go/bin/
+go build -o ~/go/bin/okini
 ```
 
 **Windows (PowerShell):**
 ```powershell
-go build -o "$env:USERPROFILE\go\bin\"
+go build -o "$env:USERPROFILE\go\bin\okini.exe"
 ```
 
 **Windows (Command Prompt):**
 ```cmd
-go build -o %USERPROFILE%\go\bin\
+go build -o %USERPROFILE%\go\bin\okini.exe
 ```
 
 Make sure `~/go/bin` (Unix) or `%USERPROFILE%\go\bin` (Windows) is in your PATH.
@@ -35,7 +35,9 @@ okini --add /path/to/file
 okini --add /path/to/file myfile
 ```
 
-If a bookmark with the same name already exists, it will be overwritten.
+If a bookmark with the same name already exists, both the existing and new bookmarks will be automatically annotated with their full paths to avoid conflicts. For example:
+- Existing: `cc` → becomes `cc <= /aaa/bb/cc`
+- New: `cc` → becomes `cc <= /dd/ff/cc`
 
 ### Removing Bookmarks
 

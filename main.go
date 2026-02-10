@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Bookmark struct {
@@ -66,6 +67,18 @@ func saveBookmarks(bookmarks Bookmarks) error {
 	return os.WriteFile(dataPath, data, 0644)
 }
 
+func annotatedName(path string) string {
+	return fmt.Sprintf("%s <= %s", filepath.Base(path), filepath.ToSlash(path))
+}
+
+func getBaseName(name string) string {
+	// If already annotated, extract the base name part
+	if before, _, ok := strings.Cut(name, " <= "); ok {
+		return before
+	}
+	return name
+}
+
 func addBookmark(path, name string) error {
 	// Convert to absolute path
 	absPath, err := filepath.Abs(path)
@@ -88,22 +101,27 @@ func addBookmark(path, name string) error {
 		return err
 	}
 
-	// Find existing bookmark and overwrite, or append new one
-	found := false
+	// Check if there's any bookmark with the same base name
+	hasConflict := false
 	for i, bm := range bookmarks {
-		if bm.Name == name {
-			bookmarks[i].Path = absPath
-			found = true
-			break
+		if getBaseName(bm.Name) == name {
+			hasConflict = true
+			// Annotate existing bookmark if not already annotated
+			if !strings.Contains(bm.Name, " <= ") {
+				bookmarks[i].Name = annotatedName(bm.Path)
+			}
 		}
 	}
 
-	if !found {
-		bookmarks = append(bookmarks, Bookmark{
-			Name: name,
-			Path: absPath,
-		})
+	// If there's a conflict, annotate the new bookmark too
+	if hasConflict {
+		name = annotatedName(absPath)
 	}
+
+	bookmarks = append(bookmarks, Bookmark{
+		Name: name,
+		Path: absPath,
+	})
 
 	return saveBookmarks(bookmarks)
 }

@@ -6,17 +6,17 @@
 
 **Unix/Linux/macOS:**
 ```bash
-go build -o ~/go/bin/
+go build -o ~/go/bin/okini
 ```
 
 **Windows (PowerShell):**
 ```powershell
-go build -o "$env:USERPROFILE\go\bin\"
+go build -o "$env:USERPROFILE\go\bin\okini.exe"
 ```
 
 **Windows (コマンドプロンプト):**
 ```cmd
-go build -o %USERPROFILE%\go\bin\
+go build -o %USERPROFILE%\go\bin\okini.exe
 ```
 
 `~/go/bin` (Unix) または `%USERPROFILE%\go\bin` (Windows) がPATHに含まれていることを確認してください。
@@ -33,7 +33,9 @@ okini --add /path/to/file
 okini --add /path/to/file myfile
 ```
 
-名前が既に存在する場合は上書きされます。
+同じ名前のブックマークが既に存在する場合、衝突を避けるために既存のブックマークと新しいブックマークの両方に自動的にフルパスの注釈が付けられます。例：
+- 既存: `cc` → `cc <= /aaa/bb/cc` になる
+- 新規: `cc` → `cc <= /dd/ff/cc` になる
 
 ### ブックマークの削除
 
