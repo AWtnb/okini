@@ -6,7 +6,7 @@
 
 **Unix/Linux/macOS:**
 ```bash
-go build -o ~/go/bin/okini
+go build -o ~/go/bin/
 ```
 
 **Windows (PowerShell):**
