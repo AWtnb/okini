@@ -181,6 +181,23 @@ func removeBookmark(path string) error {
 		return fmt.Errorf("no bookmark found with path: %s", absPath)
 	}
 
+	// Check if any annotations can be simplified
+	// Create a map to count base names
+	baseNameCount := make(map[string]int)
+	for _, bm := range filtered {
+		baseName := getBaseName(bm.Name)
+		baseNameCount[baseName]++
+	}
+
+	// Remove annotations for bookmarks that no longer have conflicts
+	for i, bm := range filtered {
+		baseName := getBaseName(bm.Name)
+		// If this is the only bookmark with this base name and it's annotated, simplify it
+		if baseNameCount[baseName] == 1 && strings.Contains(bm.Name, " <= ") {
+			filtered[i].Name = baseName
+		}
+	}
+
 	if err := saveBookmarks(filtered); err != nil {
 		return err
 	}
