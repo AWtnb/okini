@@ -47,6 +47,10 @@ okini --remove /path/to/file
 
 This will remove all bookmarks with the matching path, even if they have different names.
 
+After removal, if a bookmark no longer has name conflicts, its annotation will be automatically simplified. For example:
+- Before removal: `aa <= C:/Users/username/Desktop/aa` and `aa <= C:/Users/username/Desktop/bb/aa`
+- After removing one: `aa` (annotation removed since there's no conflict anymore)
+
 ### Listing Bookmark Names
 
 ```bash

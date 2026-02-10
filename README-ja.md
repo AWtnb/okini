@@ -45,6 +45,10 @@ okini --remove /path/to/file
 
 指定したパスに一致するブックマークをすべて削除します（名前が異なっていても削除されます）。
 
+削除後、名前の衝突がなくなったブックマークの注釈は自動的に簡略化されます。例：
+- 削除前: `aa <= C:/Users/username/Desktop/aa` と `aa <= C:/Users/username/Desktop/bb/aa`
+- 片方の削除後: `aa` （衝突がなくなったので注釈が除去される）
+
 ### ブックマーク名の一覧取得
 
 ```bash
