@@ -101,6 +101,13 @@ func addBookmark(path, name string) error {
 		return err
 	}
 
+	// If same bookmark already exists, do nothing
+	for _, bm := range bookmarks {
+		if bm.Name == name && bm.Path == absPath {
+			return fmt.Errorf("entry duplicates: name=%s, path=%s", name, absPath)
+		}
+	}
+
 	// Check if there's any bookmark with the same base name
 	hasConflict := false
 	for i, bm := range bookmarks {
