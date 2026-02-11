@@ -50,7 +50,7 @@ okini --remove myfile
 ```
 
 The `--remove` command can remove bookmarks by either path or name:
-- If the argument contains a path separator (`/` or `\`), it removes by path
+- If the argument is a path, it removes by path
 - Otherwise, it removes by name
 
 This will remove all bookmarks matching the specified path or name.

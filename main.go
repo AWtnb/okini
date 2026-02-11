@@ -280,8 +280,8 @@ func run() int {
 
 	// Remove mode
 	if *removeCmd != "" {
-		// If the argument looks like a path (contains path separator), remove by path
-		if filepath.Base(*removeCmd) != *removeCmd {
+		// If the argument is a path, remove by path
+		if _, err := os.Stat(*removeCmd); err == nil {
 			if err := removeBookmark(*removeCmd); err != nil {
 				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 				return 1
