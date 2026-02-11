@@ -222,7 +222,7 @@ func removeBookmark(path string) error {
 	return nil
 }
 
-func removeName(name string) error {
+func removeBookmarkByName(name string) error {
 	bookmarks, err := loadBookmarks()
 	if err != nil {
 		return err
@@ -232,7 +232,7 @@ func removeName(name string) error {
 	filtered := make(Bookmarks, 0)
 	removedCount := 0
 	for _, bm := range bookmarks {
-		if bm.Name != name {
+		if getBaseName(bm.Name) != name {
 			filtered = append(filtered, bm)
 		} else {
 			removedCount++
@@ -289,7 +289,7 @@ func run() int {
 			return 0
 		}
 		// Otherwise, remove by name
-		if err := removeName(*removeCmd); err != nil {
+		if err := removeBookmarkByName(*removeCmd); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			return 1
 		}
