@@ -40,14 +40,22 @@ okini --add /path/to/file myfile
 ### ブックマークの削除
 
 ```bash
+# パスで削除
 okini --remove /path/to/file
+
+# 名前で削除
+okini --remove myfile
 ```
 
-指定したパスに一致するブックマークをすべて削除します（名前が異なっていても削除されます）。
+`--remove`コマンドはパスまたは名前でブックマークを削除できます：
+- 引数にパスセパレータ（`/`または`\`）が含まれている場合、パスで削除
+- それ以外の場合、名前で削除
+
+指定したパスまたは名前に一致するブックマークをすべて削除します。
 
 削除後、名前の衝突がなくなったブックマークの注釈は自動的に簡略化されます。例：
 - 削除前: `aa <= C:/Users/username/Desktop/aa` と `aa <= C:/Users/username/Desktop/bb/aa`
-- 片方の削除後: `aa` （衝突がなくなったので注釈が除去される）
+- 片方削除後: `aa` （衝突がなくなったので注釈が除去される）
 
 ### ブックマーク名の一覧取得
 
@@ -68,6 +76,23 @@ okini --search myfile
 ```
 
 ### コマンドライン例
+
+**基本的な使い方:**
+```bash
+# ブックマークの追加
+okini --add /path/to/file
+okini --add /path/to/file myfile
+
+# パスまたは名前で削除
+okini --remove /path/to/file       # パスで削除
+okini --remove myfile              # 名前で削除
+
+# 一覧表示と検索
+okini --list
+okini --search myfile
+```
+
+**fzfと組み合わせて:**
 
 **Unix/Linux/macOS:**
 ```bash

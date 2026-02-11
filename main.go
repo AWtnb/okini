@@ -79,6 +79,29 @@ func getBaseName(name string) string {
 	return name
 }
 
+func simplifyAnnotations(bookmarks Bookmarks) Bookmarks {
+	// Create a map to count base names
+	baseNameCount := make(map[string]int)
+	for _, bm := range bookmarks {
+		baseName := getBaseName(bm.Name)
+		baseNameCount[baseName]++
+	}
+
+	// Remove annotations for bookmarks that no longer have conflicts
+	result := make(Bookmarks, len(bookmarks))
+	for i, bm := range bookmarks {
+		baseName := getBaseName(bm.Name)
+		// If this is the only bookmark with this base name and it's annotated, simplify it
+		if baseNameCount[baseName] == 1 && strings.Contains(bm.Name, " <= ") {
+			result[i] = Bookmark{Name: baseName, Path: bm.Path}
+		} else {
+			result[i] = bm
+		}
+	}
+
+	return result
+}
+
 func addBookmark(path, name string) error {
 	// Convert to absolute path
 	absPath, err := filepath.Abs(path)
@@ -188,22 +211,40 @@ func removeBookmark(path string) error {
 		return fmt.Errorf("no bookmark found with path: %s", absPath)
 	}
 
-	// Check if any annotations can be simplified
-	// Create a map to count base names
-	baseNameCount := make(map[string]int)
-	for _, bm := range filtered {
-		baseName := getBaseName(bm.Name)
-		baseNameCount[baseName]++
+	// Simplify annotations if conflicts are resolved
+	filtered = simplifyAnnotations(filtered)
+
+	if err := saveBookmarks(filtered); err != nil {
+		return err
 	}
 
-	// Remove annotations for bookmarks that no longer have conflicts
-	for i, bm := range filtered {
-		baseName := getBaseName(bm.Name)
-		// If this is the only bookmark with this base name and it's annotated, simplify it
-		if baseNameCount[baseName] == 1 && strings.Contains(bm.Name, " <= ") {
-			filtered[i].Name = baseName
+	fmt.Printf("Removed %d bookmark(s)\n", removedCount)
+	return nil
+}
+
+func removeName(name string) error {
+	bookmarks, err := loadBookmarks()
+	if err != nil {
+		return err
+	}
+
+	// Filter out all bookmarks with matching name
+	filtered := make(Bookmarks, 0)
+	removedCount := 0
+	for _, bm := range bookmarks {
+		if bm.Name != name {
+			filtered = append(filtered, bm)
+		} else {
+			removedCount++
 		}
 	}
+
+	if removedCount == 0 {
+		return fmt.Errorf("no bookmark found with name: %s", name)
+	}
+
+	// Simplify annotations if conflicts are resolved
+	filtered = simplifyAnnotations(filtered)
 
 	if err := saveBookmarks(filtered); err != nil {
 		return err
@@ -217,7 +258,7 @@ func run() int {
 	addCmd := flag.String("add", "", "Add a bookmark for the file path")
 	listCmd := flag.Bool("list", false, "List all bookmark names")
 	searchCmd := flag.String("search", "", "Search path by name")
-	removeCmd := flag.String("remove", "", "Remove bookmark(s) by path")
+	removeCmd := flag.String("remove", "", "Remove bookmark(s) by path or name")
 
 	flag.Parse()
 
@@ -239,7 +280,16 @@ func run() int {
 
 	// Remove mode
 	if *removeCmd != "" {
-		if err := removeBookmark(*removeCmd); err != nil {
+		// If the argument looks like a path (contains path separator), remove by path
+		if filepath.Base(*removeCmd) != *removeCmd {
+			if err := removeBookmark(*removeCmd); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				return 1
+			}
+			return 0
+		}
+		// Otherwise, remove by name
+		if err := removeName(*removeCmd); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			return 1
 		}
@@ -269,14 +319,15 @@ func run() int {
 	fmt.Println()
 	fmt.Println("Usage:")
 	fmt.Println("  okini --add <file_path> [name]     Add a bookmark")
-	fmt.Println("  okini --remove <file_path>         Remove bookmark(s) by path")
+	fmt.Println("  okini --remove <path_or_name>      Remove bookmark(s) by path or name")
 	fmt.Println("  okini --list                       List all bookmark names")
-	fmt.Println("  okini --search <name>              Search path by name")
+	fmt.Println("  okini --search <n>              Search path by name")
 	fmt.Println()
 	fmt.Println("Examples:")
 	fmt.Println("  okini --add /path/to/file")
 	fmt.Println("  okini --add /path/to/file myfile")
-	fmt.Println("  okini --remove /path/to/file")
+	fmt.Println("  okini --remove /path/to/file       # Remove by path")
+	fmt.Println("  okini --remove myfile              # Remove by name")
 	fmt.Println("  okini --list | fzf | xargs okini --search")
 	return 0
 }

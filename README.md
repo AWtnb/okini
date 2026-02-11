@@ -42,10 +42,18 @@ If a bookmark with the same name already exists, both the existing and new bookm
 ### Removing Bookmarks
 
 ```bash
+# Remove by path
 okini --remove /path/to/file
+
+# Remove by name
+okini --remove myfile
 ```
 
-This will remove all bookmarks with the matching path, even if they have different names.
+The `--remove` command can remove bookmarks by either path or name:
+- If the argument contains a path separator (`/` or `\`), it removes by path
+- Otherwise, it removes by name
+
+This will remove all bookmarks matching the specified path or name.
 
 After removal, if a bookmark no longer has name conflicts, its annotation will be automatically simplified. For example:
 - Before removal: `aa <= C:/Users/username/Desktop/aa` and `aa <= C:/Users/username/Desktop/bb/aa`
@@ -66,6 +74,23 @@ okini --search myfile
 ```
 
 ### Command-line Examples
+
+**Basic usage:**
+```bash
+# Add bookmarks
+okini --add /path/to/file
+okini --add /path/to/file myfile
+
+# Remove by path or name
+okini --remove /path/to/file       # Remove by path
+okini --remove myfile              # Remove by name
+
+# List and search
+okini --list
+okini --search myfile
+```
+
+**With fzf:**
 
 **Unix/Linux/macOS:**
 ```bash
