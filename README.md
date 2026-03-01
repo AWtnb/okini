@@ -6,22 +6,17 @@ A CLI tool for bookmarking local file paths
 
 ## Installation
 
-**Unix/Linux/macOS:**
-```bash
-go build -o ~/go/bin/okini
+```
+go install github.com/AWtnb/zyw@latest
 ```
 
-**Windows (PowerShell):**
-```powershell
-go build -o "$env:USERPROFILE\go\bin\okini.exe"
+or
+
+```
+go install .
 ```
 
-**Windows (Command Prompt):**
-```cmd
-go build -o %USERPROFILE%\go\bin\okini.exe
-```
-
-Make sure `~/go/bin` (Unix) or `%USERPROFILE%\go\bin` (Windows) is in your PATH.
+after cloning this repo.
 
 ## Usage
 

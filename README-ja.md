@@ -4,22 +4,17 @@
 
 ## インストール
 
-**Unix/Linux/macOS:**
-```bash
-go build -o ~/go/bin/okini
+
+```
+go install github.com/AWtnb/okini@latest
 ```
 
-**Windows (PowerShell):**
-```powershell
-go build -o "$env:USERPROFILE\go\bin\okini.exe"
+もしくはこのリポジトリをクローンしてから下記を実行。
+
+```
+go install .
 ```
 
-**Windows (コマンドプロンプト):**
-```cmd
-go build -o %USERPROFILE%\go\bin\okini.exe
-```
-
-`~/go/bin` (Unix) または `%USERPROFILE%\go\bin` (Windows) がPATHに含まれていることを確認してください。
 
 ## 使い方
 
