@@ -68,8 +68,18 @@ func saveBookmarks(bookmarks Bookmarks) error {
 	return os.WriteFile(dataPath, data, 0644)
 }
 
+func getLeaf(path string) string {
+	if after, ok := strings.CutPrefix(path, `\\`); ok {
+		parts := strings.Split(strings.TrimSuffix(after, `\`), `\`)
+		if 0 < len(parts) {
+			return parts[len(parts)-1]
+		}
+	}
+	return filepath.Base(path)
+}
+
 func annotatedName(path string) string {
-	return fmt.Sprintf("%s <= %s", filepath.Base(path), filepath.ToSlash(path))
+	return getLeaf(path) + connector + filepath.ToSlash(path)
 }
 
 func getBaseName(name string) string {
@@ -117,7 +127,7 @@ func addBookmark(path, name string) error {
 
 	// Use base name if name is not specified
 	if name == "" {
-		name = filepath.Base(absPath)
+		name = getLeaf(absPath)
 	}
 
 	bookmarks, err := loadBookmarks()
