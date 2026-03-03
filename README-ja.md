@@ -4,7 +4,6 @@
 
 ## インストール
 
-
 ```
 go install github.com/AWtnb/okini@latest
 ```
@@ -12,9 +11,8 @@ go install github.com/AWtnb/okini@latest
 もしくはこのリポジトリをクローンしてから下記を実行。
 
 ```
-go install .
+go install
 ```
-
 
 ## 使い方
 
@@ -29,6 +27,7 @@ okini --add /path/to/file myfile
 ```
 
 同じ名前のブックマークが既に存在する場合、衝突を避けるために既存のブックマークと新しいブックマークの両方に自動的にフルパスの注釈が付けられます。例：
+
 - 既存: `cc` → `cc <= /aaa/bb/cc` になる
 - 新規: `cc` → `cc <= /dd/ff/cc` になる
 
@@ -43,12 +42,14 @@ okini --remove myfile
 ```
 
 `--remove`コマンドはパスまたは名前でブックマークを削除できます：
+
 - 引数がパスの場合、パスで削除
 - それ以外の場合、名前で削除
 
 指定したパスまたは名前に一致するブックマークをすべて削除します。
 
 削除後、名前の衝突がなくなったブックマークの注釈は自動的に簡略化されます。例：
+
 - 削除前: `aa <= C:/Users/username/Desktop/aa` と `aa <= C:/Users/username/Desktop/bb/aa`
 - 片方削除後: `aa` （衝突がなくなったので注釈が除去される）
 
@@ -73,6 +74,7 @@ okini --search myfile
 ### コマンドライン例
 
 **基本的な使い方:**
+
 ```bash
 # ブックマークの追加
 okini --add /path/to/file
@@ -90,11 +92,13 @@ okini --search myfile
 **fzfと組み合わせて:**
 
 **Unix/Linux/macOS:**
+
 ```bash
 okini --list | fzf | xargs okini --search
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 okini --search (okini --list | fzf)
 ```
@@ -104,11 +108,13 @@ okini --search (okini --list | fzf)
 ブックマークから選択してパスを取得：
 
 **Unix/Linux/macOS:**
+
 ```bash
 okini --list | fzf | xargs -I {} okini --search {}
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 okini --search (okini --list | fzf)
 ```
@@ -116,11 +122,13 @@ okini --search (okini --list | fzf)
 選択したパスに移動：
 
 **Unix/Linux/macOS:**
+
 ```bash
 cd $(okini --list | fzf | xargs -I {} okini --search {})
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 cd (okini --search (okini --list | fzf))
 ```
@@ -128,11 +136,13 @@ cd (okini --search (okini --list | fzf))
 エイリアスとして登録すると便利です：
 
 **Bash/Zsh (.bashrc や .zshrc に追加):**
+
 ```bash
 alias cdoki='cd $(okini --list | fzf | xargs -I {} okini --search {})'
 ```
 
 **PowerShell ($PROFILE に追加):**
+
 ```powershell
 function cdoki { cd (okini --search (okini --list | fzf)) }
 ```

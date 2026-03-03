@@ -13,7 +13,7 @@ go install github.com/AWtnb/zyw@latest
 or
 
 ```
-go install .
+go install
 ```
 
 after cloning this repo.
@@ -31,6 +31,7 @@ okini --add /path/to/file myfile
 ```
 
 If a bookmark with the same name already exists, both the existing and new bookmarks will be automatically annotated with their full paths to avoid conflicts. For example:
+
 - Existing: `cc` → becomes `cc <= /aaa/bb/cc`
 - New: `cc` → becomes `cc <= /dd/ff/cc`
 
@@ -45,12 +46,14 @@ okini --remove myfile
 ```
 
 The `--remove` command can remove bookmarks by either path or name:
+
 - If the argument is a path, it removes by path
 - Otherwise, it removes by name
 
 This will remove all bookmarks matching the specified path or name.
 
 After removal, if a bookmark no longer has name conflicts, its annotation will be automatically simplified. For example:
+
 - Before removal: `aa <= C:/Users/username/Desktop/aa` and `aa <= C:/Users/username/Desktop/bb/aa`
 - After removing one: `aa` (annotation removed since there's no conflict anymore)
 
@@ -71,6 +74,7 @@ okini --search myfile
 ### Command-line Examples
 
 **Basic usage:**
+
 ```bash
 # Add bookmarks
 okini --add /path/to/file
@@ -88,11 +92,13 @@ okini --search myfile
 **With fzf:**
 
 **Unix/Linux/macOS:**
+
 ```bash
 okini --list | fzf | xargs okini --search
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 okini --search (okini --list | fzf)
 ```
@@ -102,11 +108,13 @@ okini --search (okini --list | fzf)
 Select a bookmark and get its path:
 
 **Unix/Linux/macOS:**
+
 ```bash
 okini --list | fzf | xargs -I {} okini --search {}
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 okini --search (okini --list | fzf)
 ```
@@ -114,11 +122,13 @@ okini --search (okini --list | fzf)
 Navigate to selected path:
 
 **Unix/Linux/macOS:**
+
 ```bash
 cd $(okini --list | fzf | xargs -I {} okini --search {})
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 cd (okini --search (okini --list | fzf))
 ```
@@ -126,11 +136,13 @@ cd (okini --search (okini --list | fzf))
 Registering as an alias is convenient:
 
 **Bash/Zsh (add to .bashrc or .zshrc):**
+
 ```bash
 alias cdoki='cd $(okini --list | fzf | xargs -I {} okini --search {})'
 ```
 
 **PowerShell (add to $PROFILE):**
+
 ```powershell
 function cdoki { cd (okini --search (okini --list | fzf)) }
 ```
