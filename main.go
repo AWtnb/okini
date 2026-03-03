@@ -17,6 +17,7 @@ type Bookmark struct {
 type Bookmarks []Bookmark
 
 const appName = "okini"
+const connector = " == "
 
 func getDataPath() (string, error) {
 	userConfigDir, err := os.UserConfigDir()
@@ -73,7 +74,7 @@ func annotatedName(path string) string {
 
 func getBaseName(name string) string {
 	// If already annotated, extract the base name part
-	if before, _, ok := strings.Cut(name, " <= "); ok {
+	if before, _, ok := strings.Cut(name, connector); ok {
 		return before
 	}
 	return name
@@ -92,7 +93,7 @@ func simplifyAnnotations(bookmarks Bookmarks) Bookmarks {
 	for i, bm := range bookmarks {
 		baseName := getBaseName(bm.Name)
 		// If this is the only bookmark with this base name and it's annotated, simplify it
-		if baseNameCount[baseName] == 1 && strings.Contains(bm.Name, " <= ") {
+		if baseNameCount[baseName] == 1 && strings.Contains(bm.Name, connector) {
 			result[i] = Bookmark{Name: baseName, Path: bm.Path}
 		} else {
 			result[i] = bm
@@ -137,7 +138,7 @@ func addBookmark(path, name string) error {
 		if getBaseName(bm.Name) == name {
 			hasConflict = true
 			// Annotate existing bookmark if not already annotated
-			if !strings.Contains(bm.Name, " <= ") {
+			if !strings.Contains(bm.Name, connector) {
 				bookmarks[i].Name = annotatedName(bm.Path)
 			}
 		}
