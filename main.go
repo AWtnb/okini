@@ -18,6 +18,7 @@ type Bookmarks []Bookmark
 
 const appName = "okini"
 const connector = " == "
+const sep = string(filepath.Separator)
 
 func getDataPath() (string, error) {
 	userConfigDir, err := os.UserConfigDir()
@@ -68,18 +69,17 @@ func saveBookmarks(bookmarks Bookmarks) error {
 	return os.WriteFile(dataPath, data, 0644)
 }
 
-func getLeaf(path string) string {
-	if after, ok := strings.CutPrefix(path, `\\`); ok {
-		parts := strings.Split(strings.TrimSuffix(after, `\`), `\`)
-		if 0 < len(parts) {
-			return parts[len(parts)-1]
-		}
+func leafOf(path string) string {
+	uncPrefix := strings.Repeat(sep, 2)
+	if after, ok := strings.CutPrefix(path, uncPrefix); ok {
+		path = after
 	}
-	return filepath.Base(path)
+	parts := strings.Split(strings.TrimSuffix(path, sep), sep)
+	return parts[len(parts)-1]
 }
 
-func annotatedName(path string) string {
-	return getLeaf(path) + connector + filepath.ToSlash(path)
+func getAnnotatedName(path string) string {
+	return leafOf(path) + connector + filepath.ToSlash(path)
 }
 
 func getBaseName(name string) string {
@@ -127,7 +127,7 @@ func addBookmark(path, name string) error {
 
 	// Use base name if name is not specified
 	if name == "" {
-		name = getLeaf(absPath)
+		name = leafOf(absPath)
 	}
 
 	bookmarks, err := loadBookmarks()
@@ -149,14 +149,14 @@ func addBookmark(path, name string) error {
 			hasConflict = true
 			// Annotate existing bookmark if not already annotated
 			if !strings.Contains(bm.Name, connector) {
-				bookmarks[i].Name = annotatedName(bm.Path)
+				bookmarks[i].Name = getAnnotatedName(bm.Path)
 			}
 		}
 	}
 
 	// If there's a conflict, annotate the new bookmark too
 	if hasConflict {
-		name = annotatedName(absPath)
+		name = getAnnotatedName(absPath)
 	}
 
 	bookmarks = append(bookmarks, Bookmark{
