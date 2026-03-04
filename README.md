@@ -7,7 +7,7 @@ A CLI tool for bookmarking local file paths
 ## Installation
 
 ```
-go install github.com/AWtnb/zyw@latest
+go install github.com/AWtnb/okini@latest
 ```
 
 or
